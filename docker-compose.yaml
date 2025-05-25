@@ -49,6 +49,24 @@ services:
     networks:
       - net
 
+  app:
+    container_name: app_orders
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - migrate
+      - seed
+    expose:
+      - ${PORT}
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - net
+
 volumes:
   dbData:
 
