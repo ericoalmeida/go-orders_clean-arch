@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:15
+    container_name: db_local
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: orders
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbData:/var/lib/postgresql/data
+    networks:
+      - net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d orders"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    image: migrate/migrate
+    container_name: db_migrate
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./db/migrations:/db/migrations
+    networks:
+      - net
+    command:
+      [
+        "-path", "/db/migrations",
+        "-database", "postgres://postgres:postgres@db:5432/orders?sslmode=disable",
+        "up"
+      ]
+
+  seed:
+    container_name: db_seed
+    build:
+      context: .
+      dockerfile: Dockerfile.seed
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - migrate
+    networks:
+      - net
+
+volumes:
+  dbData:
+
+networks:
+  net:
+    external: false

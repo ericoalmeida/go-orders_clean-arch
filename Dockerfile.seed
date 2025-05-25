@@ -1,0 +1,19 @@
+FROM golang:1.23 AS builder
+
+WORKDIR /db/seeds
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o dbseed ./db/seeds
+
+FROM alpine:3.21.3
+
+WORKDIR /server
+
+COPY --from=builder /db/seeds/dbseed .
+
+CMD ["./dbseed"]
