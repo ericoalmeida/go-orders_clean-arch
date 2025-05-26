@@ -37,8 +37,10 @@ func main() {
 		orderHandler := handlers.NewGetAllOrdersHandler(useCase)
 		mux.HandleFunc("/orders", orderHandler.ListOrders)
 
-		log.Println("Listening on :8080")
-		log.Fatal(http.ListenAndServe(":"+port, nil))
+		log.Println("Listening on :" + port)
+		if err := http.ListenAndServe(":"+port, mux); err != nil {
+			log.Fatalf("Failed on trying to start HTTP server: %v", err)
+		}
 	}()
 
 	go func() {

@@ -63,9 +63,11 @@ services:
     expose:
       - ${PORT}
       - ${GRPC_PORT}
+      - ${GRAPHQL_PORT}
     ports:
       - ${PORT}:${PORT}
       - ${GRPC_PORT}:${GRPC_PORT}
+      - ${GRAPHQL_PORT}:${GRAPHQL_PORT}
     networks:
       - net
 
