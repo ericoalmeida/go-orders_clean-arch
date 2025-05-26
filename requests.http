@@ -1,0 +1,12 @@
+### REST - Find all orders
+GET http://localhost:8080/orders
+Accept: application/json
+
+
+### GraphQL - Find all orders
+POST http://localhost:8081/graphql
+Content-Type: application/json
+
+{
+  "query": "{ getAllOrders { id customer item purchaseDate price } }"
+}
