@@ -47,6 +47,7 @@ O objetivo desta aplicação é fornecer uma base sólida para construção de m
 DATABASE_URL=
 PORT=8080
 GRPC_PORT=50051
+GRAPHQL_PORT=8081
 ```
 
 3. Suba os containers:
@@ -63,4 +64,19 @@ curl -X GET http://localhost:8080/orders
    - A lib `grpcurl` é requerida para o comando abaixo 
 ```bash
 grpcurl -plaintext -d '{}' localhost:50051 order.OrderService/GetAllOrders
+```
+
+6. Acesse a API GraphQL
+    - [Playground](http://localhost:8081/playground)
+    - Exemplo de query:
+```txt
+query {
+  getAllOrders {
+    id
+    item
+    customer
+    purchaseDate
+    price
+  }
+}
 ```

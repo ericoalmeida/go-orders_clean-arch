@@ -1,0 +1,11 @@
+type Order {
+  id: ID!
+  item: String!
+  customer: String!
+  purchaseDate: String!
+  price: Int!
+}
+
+type Query {
+  getAllOrders: [Order!]!
+}

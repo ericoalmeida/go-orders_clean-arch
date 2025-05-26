@@ -6,6 +6,10 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
+	graph "github.com/ericoalmeida/go-orders_clean-arch/graphql"
+	"github.com/ericoalmeida/go-orders_clean-arch/graphql/generated"
 	"github.com/ericoalmeida/go-orders_clean-arch/grpc"
 	grpcord "github.com/ericoalmeida/go-orders_clean-arch/grpc/order"
 	config "github.com/ericoalmeida/go-orders_clean-arch/internal/configs"
@@ -23,6 +27,7 @@ func main() {
 	connStr := config.GetEnv("DATABASE_URL")
 	port := config.GetEnv("PORT")
 	grpcPort := config.GetEnv("GRPC_PORT")
+	graphQlPort := config.GetEnv("GRAPHQL_PORT")
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -55,10 +60,30 @@ func main() {
 
 		reflection.Register(grpcServer)
 
-		log.Println("Listening on :" + grpcPort)
+		log.Println("[gRPC] Listening on :" + grpcPort)
 
 		if err := grpcServer.Serve(lis); err != nil {
 			log.Fatalf("Failed on trying to start gRPC server: %v", err)
+		}
+	}()
+
+	go func() {
+		server := handler.NewDefaultServer(
+			generated.NewExecutableSchema(
+				generated.Config{
+					Resolvers: &graph.Resolver{
+						OrderUseCase: *useCase,
+					},
+				},
+			),
+		)
+
+		http.Handle("/graphql", server)
+		http.Handle("/playground", playground.Handler("GraphQL Playground", "/graphql"))
+
+		log.Println("[GraphQL] Listening on :" + graphQlPort)
+		if err := http.ListenAndServe(":"+graphQlPort, nil); err != nil {
+			log.Fatalf("GraphQL server failed: %v", err)
 		}
 	}()
 
