@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package order;
+
+service OrderService {
+  rpc GetAllOrders (Empty) returns (GetAllOrdersResponse);
+}
+
+option go_package = "./grpc/order;orderpb";
+
+message Empty {}
+
+message Order {
+  string id = 1;
+  string item = 2;
+  string customer = 3;
+  string purchaseDate = 4;
+  int64 price = 5;
+}
+
+message GetAllOrdersResponse {
+  repeated Order orders = 1;
+}

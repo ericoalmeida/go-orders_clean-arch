@@ -46,6 +46,7 @@ O objetivo desta aplicação é fornecer uma base sólida para construção de m
 ```bash
 DATABASE_URL=
 PORT=8080
+GRPC_PORT=50051
 ```
 
 3. Suba os containers:
@@ -53,7 +54,13 @@ PORT=8080
 docker-compose up --build
 ```
 
-4. Acesse a API:
+4. Acesse a API REST:
 ```bash
 curl -X GET http://localhost:8080/orders
+```
+
+5. Acesse a API gRPC:
+   - A lib `grpcurl` é requerida para o comando abaixo 
+```bash
+grpcurl -plaintext -d '{}' localhost:50051 order.OrderService/GetAllOrders
 ```

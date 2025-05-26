@@ -62,8 +62,10 @@ services:
       - seed
     expose:
       - ${PORT}
+      - ${GRPC_PORT}
     ports:
       - ${PORT}:${PORT}
+      - ${GRPC_PORT}:${GRPC_PORT}
     networks:
       - net
 
