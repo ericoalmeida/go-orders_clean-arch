@@ -44,7 +44,7 @@ O objetivo desta aplicação é fornecer uma base sólida para construção de m
 
 2. Crie um arquivo .env com as variáveis de ambiente necessárias:
 ```bash
-DATABASE_URL=
+DATABASE_URL="postgres://postgres:postgres@db:5432/orders?sslmode=disable"
 PORT=8080
 GRPC_PORT=50051
 GRAPHQL_PORT=8081
